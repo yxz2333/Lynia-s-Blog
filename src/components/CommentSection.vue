@@ -52,6 +52,20 @@ onMounted(async () => {
   if (container) container.appendChild(script)
 })
 
+// ======== giscus OAuth 回调 URL 清理 ========
+function onGiscusMessage(event) {
+  if (event.origin !== 'https://giscus.app') return
+  if (!(event.data && typeof event.data === 'object' && event.data.giscus)) return
+  // giscus 已初始化，清理 OAuth 回调留下的 ?giscus= 参数
+  if (location.search.includes('giscus=')) {
+    const url = new URL(location.href)
+    url.searchParams.delete('giscus')
+    history.replaceState(history.state, '', url.pathname + url.search + url.hash)
+  }
+}
+onMounted(() => window.addEventListener('message', onGiscusMessage))
+onUnmounted(() => window.removeEventListener('message', onGiscusMessage))
+
 // ======== SPA 路由切换时通知 giscus 更新 ========
 const route = useRoute()
 watch(() => route.path, () => {
