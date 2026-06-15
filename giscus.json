@@ -1,0 +1,4 @@
+{
+  "origins": ["https://yxz2333.github.io", "http://localhost:5173"],
+  "originsRegex": ["http://localhost:[0-9]+"]
+}

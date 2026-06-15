@@ -1,18 +1,50 @@
 <script setup>
-// This component will eventually integrate Utterances.
-// For now it shows a placeholder with sample comments.
-const sampleComments = [
-  {
-    id: 1,
-    author: '梦泽',
-    avatar: '梦',
-    date: '2024-03-20',
-    content: '提醒一下 就是VitePress不是SSR，需要分辨一下 VitePress是SSG 静态站点生成',
-    location: '湖南',
-    device: '🤖 Android',
-    browser: '🌐 Chrome',
-  },
-]
+import { onMounted, ref } from 'vue'
+
+// ======== giscus 配置 ========
+// 1. 仓库 Settings → 开启 Discussions
+// 2. 安装 giscus App: https://github.com/apps/giscus
+// 3. 访问 https://giscus.app/zh-CN 获取 repo-id 和 category-id
+const GISCUS_CONFIG = {
+  repo: 'yxz2333/yxz2333.github.io',
+  repoId: 'R_kgDOS6sjkQ',
+  category: 'General',
+  categoryId: 'DIC_kwDOS6sjkc4C_MM9',
+  mapping: 'pathname',
+  reactionsEnabled: '1',
+  emitMetadata: '0',
+  inputPosition: 'bottom',
+  theme: 'preferred_color_scheme',
+  lang: 'zh-CN',
+}
+
+const configured = ref(false)
+const loading = ref(true)
+
+onMounted(() => {
+  const hasId = GISCUS_CONFIG.repoId && !GISCUS_CONFIG.repoId.includes('xxxx')
+  if (!hasId) { loading.value = false; return }
+  configured.value = true
+
+  const script = document.createElement('script')
+  script.src = 'https://giscus.app/client.js'
+  script.setAttribute('data-repo', GISCUS_CONFIG.repo)
+  script.setAttribute('data-repo-id', GISCUS_CONFIG.repoId)
+  script.setAttribute('data-category', GISCUS_CONFIG.category)
+  script.setAttribute('data-category-id', GISCUS_CONFIG.categoryId)
+  script.setAttribute('data-mapping', GISCUS_CONFIG.mapping)
+  script.setAttribute('data-reactions-enabled', GISCUS_CONFIG.reactionsEnabled)
+  script.setAttribute('data-emit-metadata', GISCUS_CONFIG.emitMetadata)
+  script.setAttribute('data-input-position', GISCUS_CONFIG.inputPosition)
+  script.setAttribute('data-theme', GISCUS_CONFIG.theme)
+  script.setAttribute('data-lang', GISCUS_CONFIG.lang)
+  script.setAttribute('crossorigin', 'anonymous')
+  script.setAttribute('async', 'true')
+  script.onload = () => { loading.value = false }
+
+  const container = document.getElementById('giscus-container')
+  if (container) container.appendChild(script)
+})
 </script>
 
 <template>
@@ -21,33 +53,23 @@ const sampleComments = [
       <span class="text-accent">💬</span> 评论区
     </h3>
 
-    <!-- Sample comments -->
-    <div class="space-y-6 mb-8">
-      <div v-for="comment in sampleComments" :key="comment.id" class="flex gap-4">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shrink-0 flex items-center justify-center text-white font-bold shadow-md">
-          {{ comment.avatar }}
-        </div>
-        <div class="flex-grow glass-card rounded-2xl rounded-tl-none p-4">
-          <div class="flex justify-between items-start mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-200 text-sm">{{ comment.author }}</span>
-              <span class="text-xs text-gray-500 font-mono">{{ comment.date }}</span>
-            </div>
-          </div>
-          <p class="text-gray-300 text-sm leading-relaxed mb-3">{{ comment.content }}</p>
-          <div class="flex flex-wrap gap-3 text-[10px] text-gray-500 bg-black/20 rounded py-1 px-2 w-max">
-            <span>{{ comment.location }}</span>
-            <span>{{ comment.device }}</span>
-            <span>{{ comment.browser }}</span>
-          </div>
-        </div>
+    <!-- giscus 容器 -->
+    <div v-if="configured" class="glass-card rounded-2xl p-4 sm:p-6">
+      <div v-if="loading" class="flex justify-center py-10">
+        <div class="w-6 h-6 border-2 border-accent/20 border-t-accent rounded-full animate-spin"></div>
       </div>
+      <div id="giscus-container"></div>
     </div>
 
-    <!-- Utterances will be injected here -->
-    <div class="glass-card rounded-2xl p-6 text-center text-gray-500 text-sm">
-      <p>💡 评论功能将使用 <a href="https://utteranc.es" target="_blank" class="text-accent hover:underline">Utterances</a> 接入，基于 GitHub Issues。</p>
-      <p class="text-xs mt-1">部署后自动启用。</p>
+    <!-- 未配置提示 -->
+    <div v-else class="glass-card rounded-2xl p-6 text-center text-gray-500 text-sm space-y-2">
+      <p>💡 评论功能使用 <a href="https://giscus.app/zh-CN" target="_blank" class="text-accent hover:underline">giscus</a> 接入，基于 GitHub Discussions。</p>
+      <ol class="text-xs text-left max-w-md mx-auto space-y-1 list-decimal">
+        <li>仓库 Settings → 开启 <strong>Discussions</strong></li>
+        <li>安装 <a href="https://github.com/apps/giscus" target="_blank" class="text-accent hover:underline">giscus App</a></li>
+        <li>访问 giscus.app 获取 <code class="bg-white/5 px-1 rounded">repo-id</code> 和 <code class="bg-white/5 px-1 rounded">category-id</code></li>
+        <li>填入 <code class="bg-white/5 px-1 rounded">CommentSection.vue</code> 的 GISCUS_CONFIG</li>
+      </ol>
     </div>
   </div>
 </template>
