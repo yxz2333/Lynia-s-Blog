@@ -1,5 +1,10 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, nextTick, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+defineProps({
+  title: { type: String, default: '评论区' },
+})
 
 // ======== giscus 配置 ========
 // 1. 仓库 Settings → 开启 Discussions
@@ -21,10 +26,11 @@ const GISCUS_CONFIG = {
 const configured = ref(false)
 const loading = ref(true)
 
-onMounted(() => {
+onMounted(async () => {
   const hasId = GISCUS_CONFIG.repoId && !GISCUS_CONFIG.repoId.includes('xxxx')
   if (!hasId) { loading.value = false; return }
   configured.value = true
+  await nextTick()
 
   const script = document.createElement('script')
   script.src = 'https://giscus.app/client.js'
@@ -45,12 +51,24 @@ onMounted(() => {
   const container = document.getElementById('giscus-container')
   if (container) container.appendChild(script)
 })
+
+// ======== SPA 路由切换时通知 giscus 更新 ========
+const route = useRoute()
+watch(() => route.path, () => {
+  const iframe = document.querySelector('iframe.giscus-frame')
+  if (iframe) {
+    iframe.contentWindow.postMessage(
+      { giscus: { setConfig: { term: route.path } } },
+      'https://giscus.app'
+    )
+  }
+})
 </script>
 
 <template>
   <div class="mt-16 pt-8 border-t border-white/5">
     <h3 class="text-xl font-bold text-gray-200 mb-8 flex items-center gap-2">
-      <span class="text-accent">💬</span> 评论区
+      <span class="text-accent">💬</span> {{ title }}
     </h3>
 
     <!-- giscus 容器 -->

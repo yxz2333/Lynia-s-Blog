@@ -5,6 +5,7 @@ import { renderLatex } from '../composables/useKatex.js'
 import { slugify } from '../composables/useHeading.js'
 import TocSidebar from '../components/TocSidebar.vue'
 import NoteSection from '../components/NoteSection.vue'
+import CommentSection from '../components/CommentSection.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -258,6 +259,9 @@ watch(() => route.params.slug, () => load())
                 class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 font-mono shadow-sm">{{ lang }}</span>
             </div>
           </footer>
+
+          <!-- 评论区 -->
+          <CommentSection />
         </div>
 
         <!-- 右侧 TOC -->
