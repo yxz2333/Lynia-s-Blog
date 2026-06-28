@@ -13,30 +13,72 @@
   "format": "markdown",
   "sections": [
     {
-      "heading": "转移方式",
+      "heading": "区间 DP 的两大核心模型",
       "level": 2,
       "blocks": [
         {
-          "type": "p",
-          "html": "转移方式有很多，最常见的是枚举中间<strong>分割点</strong>。",
-          "depth": 2
+          "heading": "模型一：左右扩展型",
+          "level": 3,
+          "blocks": [
+            {
+              "type": "p",
+              "html": "<strong>特点</strong>：每次操作都是在当前连续区间的<strong>左边缘</strong>或<strong>右边缘</strong>增加/删除一个元素。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>状态转移思想</strong>：<code>大区间 [i, j]</code> 的答案，一定是从 <code>[i+1, j]</code>（左边缩进一位）或者 <code>[i, j-1]</code>（右边缩进一位）转移过来的。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>复杂度</strong>：通常为 $O(N^2)$。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>相关题</strong>： <a href=\"/p/cf245h-queries-for-number-of-palindromes\" class=\"wikilink\">CF245H Queries for Number of Palindromes</a>，<a href=\"/p/2026icpc西安邀请赛-c-palindromic-and-balanced\" class=\"wikilink\">2026ICPC西安邀请赛 C Palindromic and Balanced</a>，<a href=\"/p/nk131111f-小苯的对称序列\" class=\"wikilink\">NK131111F 小苯的对称序列</a>（ $O(N^3)$ 的<strong>特殊枚举方式</strong> ）",
+              "depth": 2
+            }
+          ]
         },
         {
-          "type": "p",
-          "html": "但无论怎么转移，只要保证大区间（长 <code>len</code>）的状态是严格由内部的小区间（短 <code>len</code>）组合或推导而来的，DP 的无后效性就不会被破坏，框架就绝对站得住脚。",
-          "depth": 2
-        },
-        {
-          "type": "p",
-          "html": "<a href=\"/p/nk131111f-小苯的对称序列\" class=\"wikilink\">NK131111F 小苯的对称序列</a> 本题可以看到两种转移方式，可进行记忆。",
-          "depth": 3
+          "heading": "模型二：区间拆分/合并型",
+          "level": 3,
+          "blocks": [
+            {
+              "type": "p",
+              "html": "<strong>特点</strong>：操作不是仅仅在边缘进行，而是可以将相邻的两个元素或两个小区间<strong>合并</strong>，或者将一个大区间<strong>劈开</strong>。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>状态转移思想</strong>：<code>大区间 [i, j]</code> 的答案，是把它从中间某个位置 <code>k</code> 劈成两半（<code>[i, k]</code> 和 <code>[k+1, j]</code>），把这两个小区间的答案合并起来，再加上这次合并的代价。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>公式化表示</strong>：<code>dp[i][j] = max/min( dp[i][k] + dp[k+1][j] + cost )</code>",
+              "depth": 3
+            },
+            {
+              "type": "p",
+              "html": "<strong>复杂度</strong>：通常为 $O(N^3)$。",
+              "depth": 2
+            },
+            {
+              "type": "p",
+              "html": "<strong>相关题</strong>：<a href=\"/p/p1880-[noi1995]-石子合并\" class=\"wikilink\">P1880 [NOI1995] 石子合并</a>，<a href=\"/p/cf607b-zuma\" class=\"wikilink\">CF607B Zuma</a>，<a href=\"/p/cf1132f-clear-the-string\" class=\"wikilink\">CF1132F Clear the String</a>",
+              "depth": 2
+            }
+          ]
         }
       ]
     }
   ],
   "code_languages": [],
-  "created_at": "2026-06-16",
-  "updated_at": "2026-04-05",
-  "parsed_at": "2026-06-15T17:06:06.614206+00:00",
+  "created_at": "2026-06-28",
+  "updated_at": "2026-06-28",
+  "parsed_at": "2026-06-28T09:51:04.531149+00:00",
   "type_directory": "k"
 }
