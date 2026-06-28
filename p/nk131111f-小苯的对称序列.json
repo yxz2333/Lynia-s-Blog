@@ -146,7 +146,7 @@
         {
           "type": "code",
           "lang": "cpp",
-          "code": "// O(n^3)\nshort dp[505][505], mx[2005];\nvoid solve(int CASE)\n{\n\tint n; cin >> n;\n\tvar a = vector<int>(n + 1);\n\tfa(i, 1, n)cin >> a[i];\n\tint ans = 1;\n\tfa(i, 1, n)dp[i][i] = 1;\n\tfb(i, n, 1) { // 左端点\n\t\t// mx[S]：记录当前可用区间 (i, j) 内部，和为 S 的 dp[x][y] 的最大值\n\t\t// 下面的枚举相当于把 (i, j) 内部的区间全考虑到了\n\t\tfa(j, i + 1, n) { // 右端点\n\t\t\tfa(k, i + 1, j - 1) {\n\t\t\t\tint now = a[k] + a[j - 1];\n\t\t\t\tmx[now] = max(mx[now], dp[k][j - 1]);\n\t\t\t}\n\t\t\tint now = a[i] + a[j];\n\t\t\tdp[i][j] = mx[now] + 2;\n\t\t\tans = max(ans, (int)dp[i][j]);\n\t\t}\n\t\tfa(k, 0, 2000)mx[k] = 0;\n\t}\n\tcout << ans << endl;\n\tfa(i, 1, n)fa(j, 1, n)dp[i][j] = 0;\n\treturn;\n}",
+          "code": "// O(n^3)\n// mx[S]：记录当前可用区间 (i, j) 内部，和为 S 的 dp[x][y] 的最大值\nshort dp[505][505], mx[2005];\nvoid solve(int CASE)\n{\n\tint n; cin >> n;\n\tvar a = vector<int>(n + 1);\n\tfa(i, 1, n)cin >> a[i];\n\tint ans = 1;\n\tfa(i, 1, n)dp[i][i] = 1;\n\tfb(i, n, 1) { // 固定左端点 i\n\t\t// 下面的枚举相当于把 (i, j) 内部的区间全考虑到了\n\t\tfa(j, i + 1, n) { // 右端点 j 慢慢向右扫描    \n\t\t\tfa(k, i + 1, j - 1) {\n\t\t\t\tint now = a[k] + a[j - 1];\n\t\t\t\tmx[now] = max(mx[now], dp[k][j - 1]);\n\t\t\t}\n          \t// 此时，mx 数组里已经收集了区间 (i, j) 内部所有的 dp 值\n\t\t\tint now = a[i] + a[j];\n\t\t\tdp[i][j] = mx[now] + 2;\n\t\t\tans = max(ans, (int)dp[i][j]);\n\t\t}\n\t\tfa(k, 0, 2000)mx[k] = 0;\n\t}\n\tcout << ans << endl;\n\tfa(i, 1, n)fa(j, 1, n)dp[i][j] = 0;\n\treturn;\n}",
           "depth": 1
         }
       ]
@@ -155,8 +155,8 @@
   "code_languages": [
     "cpp"
   ],
-  "created_at": "2026-06-15",
-  "updated_at": "2026-04-05",
-  "parsed_at": "2026-06-15T10:23:30.591954+00:00",
+  "created_at": "2026-06-28",
+  "updated_at": "2026-06-28",
+  "parsed_at": "2026-06-28T09:51:04.205767+00:00",
   "type_directory": "p"
 }
